@@ -1,8 +1,16 @@
-#ifndef LAB2_LINEAR_ALGEBRA_HPP
-#define LAB2_LINEAR_ALGEBRA_HPP
+#ifndef LINEAR_ALGEBRA_HPP
+#define LINEAR_ALGEBRA_HPP
 
 #include <utility>
+#include <vector>
+#include <optional>
+#include <ostream>
 
-std::pair<double**, double **> LUDecompose(double **);
+using std::pair, std::vector, std::optional;
 
-#endif //LAB2_LINEAR_ALGEBRA_HPP
+pair<double **, double **> LUDecompose(vector<vector<double> > &,
+                                       size_t,
+                                       optional<vector<int>> &,
+                                       optional<std::ostream> &);
+
+#endif
