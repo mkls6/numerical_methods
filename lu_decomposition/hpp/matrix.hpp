@@ -9,7 +9,7 @@
 #include <ostream>
 #include <istream>
 
-using std::pair, std::optional, std::vector, std::ostream, std::istream;
+using std::tuple, std::optional, std::vector, std::ostream, std::istream;
 
 class Matrix {
 public:
@@ -22,15 +22,18 @@ public:
 
     Matrix(vector<vector<double> > &);
 
-    pair<Matrix, Matrix> LUDecompose(optional<vector<int> *>);
+    tuple<Matrix, Matrix, size_t> LUDecompose(optional<vector<int> *>);
 
-    static double LUDeterminant(Matrix *,
-                                Matrix *);
+    static double LUDeterminant(Matrix &,
+                                Matrix &,
+                                size_t);
 
-    static double LUSolve(Matrix *,
-                          Matrix *);
+    static double LUSolve(Matrix &,
+                          Matrix &);
 
     static Matrix *ReadMatrix(istream &);
+
+    vector<double> operator[](const size_t &index);
 
     friend ostream &operator<<(ostream &, const Matrix &);
 

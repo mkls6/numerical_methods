@@ -18,16 +18,30 @@ ostream &operator<<(ostream &out, const Matrix &matrix) {
     return out;
 }
 
-double Matrix::LUDeterminant(Matrix *, Matrix *) {
-    return 0;
+// Actually, we need only one of the given matrices
+// as one of them always has det = 1. But we'll calculate
+// both in case of different LU decomposition method's been used
+double Matrix::LUDeterminant(Matrix &L, Matrix &U, size_t permutationCount) {
+    assert(L.rows == L.columns && "Non-square L given.");
+    assert(U.rows == U.columns && "Non-square U given.");
+    assert(L.rows == U.rows && "L and U have different sizes.");
+
+    double detL = 1, detU = 1;
+
+    for (size_t i = 0; i < L.rows; i++) {
+        detL *= L[i][i];
+        detU *= U[i][i];
+    }
+
+    return detL * detU * (permutationCount % 2 ? -1 : 1);
 }
 
-double Matrix::LUSolve(Matrix *, Matrix *) {
+double Matrix::LUSolve(Matrix &L, Matrix &U) {
     return 0;
 }
 
 size_t find_max(vector<vector<double> > &src, size_t i, size_t j) {
-    pair<size_t, size_t> max_pos = {i, j};
+    std::pair<size_t, size_t> max_pos = {i, j};
     double max_element = src[i][j];
 
     for (size_t k = i + 1; k < src[0].size(); k++) {
@@ -40,7 +54,7 @@ size_t find_max(vector<vector<double> > &src, size_t i, size_t j) {
     return max_pos.first;
 }
 
-pair<Matrix, Matrix> Matrix::LUDecompose(optional<vector<int> *> permutations) {
+tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<int> *> permutations) {
     assert(this->rows == this->columns && "Unable to perform LU decomposition on non-square matrix");
 
     size_t n = this->rows;
@@ -87,7 +101,7 @@ pair<Matrix, Matrix> Matrix::LUDecompose(optional<vector<int> *> permutations) {
         std::cout << "L:\n" << L << "\nU:\n" << U << "\n";
     }
 
-    return {U, L};
+    return {U, L, permutationsCount};
 }
 
 Matrix::Matrix(size_t rows, size_t columns) {
@@ -127,4 +141,8 @@ Matrix *Matrix::ReadMatrix(istream &in) {
     }
 
     return new Matrix(lines);
+}
+
+vector<double> Matrix::operator[](const size_t &index) {
+    return this->data[index];
 }

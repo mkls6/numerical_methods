@@ -8,8 +8,9 @@ int main() {
     std::ifstream inputFile(filePath);
     Matrix *m = Matrix::ReadMatrix(inputFile);
 
-    auto res = m->LUDecompose(std::nullopt);
-    std::cout << "U:\n" << res.first << "\nL:\n" << res.second << std::endl;
+    auto [L, U, permutationsCount] = m->LUDecompose(std::nullopt);
+    std::cout << "U:\n" << U << "\nL:\n" << L << "\nP_N: " << permutationsCount << std::endl;
+    std::cout << Matrix::LUDeterminant(L, U, permutationsCount);
 
     return 0;
 }
