@@ -10,7 +10,7 @@ ostream &operator<<(ostream &out, const Matrix &matrix) {
     out << "Matrix:\n" << std::fixed;
     for (size_t r = 0; r < matrix.rows; r++) {
         for (size_t c = 0; c < matrix.columns; c++) {
-            out << std::setw(14) << std::setprecision(8) <<  matrix.data[r][c] << " ";
+            out << std::setw(14) << std::setprecision(8) << matrix.data[r][c] << " ";
         }
         out << '\n';
     }
@@ -40,7 +40,7 @@ size_t find_max(vector<vector<double> > &src, size_t i, size_t j) {
     return max_pos.first;
 }
 
-pair<Matrix, Matrix> Matrix::LUDecompose(optional<vector<int>*> permutations) {
+pair<Matrix, Matrix> Matrix::LUDecompose(optional<vector<int> *> permutations) {
     assert(this->rows == this->columns && "Unable to perform LU decomposition on non-square matrix");
 
     size_t n = this->rows;
@@ -100,7 +100,7 @@ Matrix::Matrix(size_t rows, size_t columns) {
     }
 }
 
-Matrix::Matrix(size_t n) : Matrix(n, n) { }
+Matrix::Matrix(size_t n) : Matrix(n, n) {}
 
 Matrix::Matrix(vector<vector<double>> &data) {
     assert(!data.empty() && !data[0].empty() && "Empty vectors were provided.");
