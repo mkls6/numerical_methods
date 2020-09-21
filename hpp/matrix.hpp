@@ -7,12 +7,14 @@
 #include <optional>
 #include <vector>
 #include <ostream>
+#include <istream>
 
 using std::array,
 std::pair,
 std::optional,
 std::vector,
-std::ostream;
+std::ostream,
+std::istream;
 
 class Matrix {
 public:
@@ -22,12 +24,15 @@ public:
     Matrix(size_t, size_t);
     Matrix(size_t);
     Matrix(vector<vector<double> > &);
+    pair<Matrix, Matrix> LUDecompose(optional<vector<int>* >);
 
-    pair<Matrix, Matrix> LUDecompose(optional<vector<int> > &);
     static double LUDeterminant(Matrix *,
                                 Matrix *);
+
     static double LUSolve(Matrix *,
                           Matrix *);
+
+    static Matrix *ReadMatrix(istream&);
 
     friend ostream &operator<<(ostream &, const Matrix &);
 
