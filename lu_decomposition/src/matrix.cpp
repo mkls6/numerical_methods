@@ -36,11 +36,31 @@ double Matrix::LUDeterminant(Matrix &L, Matrix &U, size_t permutationCount) {
     return detL * detU * (permutationCount % 2 ? -1 : 1);
 }
 
-double Matrix::LUSolve(Matrix &L, Matrix &U) {
-    return 0;
+vector<double> Matrix::LUSolve(Matrix &L, Matrix &U, vector<double> &b) {
+    assert(L.rows == L.columns && "Non-square L given.");
+    assert(U.rows == U.columns && "Non-square U given.");
+    assert(L.rows == U.rows && "L and U have different sizes.");
+
+    vector<double> X(L.rows, 0);
+    vector<double> Y(L.rows, 0);
+
+    for (size_t i = 0; i < L.rows; i++) {
+        double tmp = b[i];
+        for (size_t j = 0; j < i; j++)
+            tmp -= L[i][j] * Y[j];
+        Y[i] = tmp / L[i][i];
+    }
+    for (long i = long(L.rows) - 1; i >= 0; i--) {
+        double tmp = Y[i];
+        for (size_t j = i + 1; j < L.rows; j++)
+            tmp -= U[i][j] * X[j];
+        X[i] = tmp / U[i][i];
+    }
+
+    return X;
 }
 
-size_t find_max(vector<vector<double> > &src, size_t i, size_t j) {
+size_t findMax(vector<vector<double> > &src, size_t i, size_t j) {
     std::pair<size_t, size_t> max_pos = {i, j};
     double max_element = src[i][j];
 
@@ -54,7 +74,7 @@ size_t find_max(vector<vector<double> > &src, size_t i, size_t j) {
     return max_pos.first;
 }
 
-tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<int> *> permutations) {
+tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<double> * const> permutations) {
     assert(this->rows == this->columns && "Unable to perform LU decomposition on non-square matrix");
 
     size_t n = this->rows;
@@ -65,7 +85,7 @@ tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<int> *> permut
 
     for (size_t i = 0; i < n; i++) {
         std::cout << "Step " << i + 1 << "\n";
-        auto max_pos = find_max(U, i, i);
+        auto max_pos = findMax(U, i, i);
         // Check if max value is zero or really close to zero
         if (fabs(U[i][max_pos]) < 1e-8)
             throw std::invalid_argument("Max element is within [0:1e-8]. Aborting.");
@@ -77,7 +97,8 @@ tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<int> *> permut
             permutationsCount++;
 
             if (permutations.has_value())
-                std::swap(permutations.value()[i], permutations.value()[max_pos]);
+                std::swap(permutations.value()->data()[i],
+                          permutations.value()->data()[max_pos]);
         }
 
         // L[i][j] = U[i][j] - SUM(L[i][k] * U[k][i]), k = 1..(j-1)
@@ -143,6 +164,6 @@ Matrix *Matrix::ReadMatrix(istream &in) {
     return new Matrix(lines);
 }
 
-vector<double> Matrix::operator[](const size_t &index) {
+vector<double>& Matrix::operator[](const size_t &index) {
     return this->data[index];
 }
