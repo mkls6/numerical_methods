@@ -19,7 +19,7 @@ int main() {
     for (auto i : Matrix::LUSolve(L, U, b)) {
         std::cout << i << " ";
     }
-    std::cout << "\n";
+    std::cout << "\nL * U:\n" << L * U << "\n";
 
     return 0;
 }

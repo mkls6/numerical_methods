@@ -130,7 +130,7 @@ Matrix::Matrix(size_t rows, size_t columns) {
     this->columns = columns;
 
     this->data.resize(rows);
-    for (auto i : this->data) {
+    for (auto &i : this->data) {
         i.resize(columns, 0);
     }
 }
@@ -166,4 +166,49 @@ Matrix *Matrix::ReadMatrix(istream &in) {
 
 vector<double>& Matrix::operator[](const size_t &index) {
     return this->data[index];
+}
+
+Matrix Matrix::operator+(const Matrix &m) {
+    if (this->rows != m.rows || this->columns != m.columns)
+        throw std::invalid_argument("Unequal matrix sizes");
+
+    auto newMatrix = Matrix(m.rows, m.columns);
+
+    for (size_t i = 0; i < m.rows; i++) {
+        for (size_t j = 0; j < m.columns; j++)
+            newMatrix[i][j] = this->data[i][j] + m.data[i][j];
+    }
+
+    return newMatrix;
+}
+
+Matrix Matrix::operator-(const Matrix& m) {
+    if (this->rows != m.rows || this->columns != m.columns)
+        throw std::invalid_argument("Unequal matrix sizes");
+
+    auto newMatrix = Matrix(m.rows, m.columns);
+
+    for (size_t i = 0; i < m.rows; i++) {
+        for (size_t j = 0; j < m.columns; j++)
+            newMatrix[i][j] = this->data[i][j] - m.data[i][j];
+    }
+
+    return newMatrix;
+}
+
+Matrix Matrix::operator*(const Matrix &m) {
+    if (this->columns!= m.rows)
+        throw std::invalid_argument("A x B: A row count must be equal to B column count.");
+
+    auto newMatrix = Matrix(this->rows, m.columns);
+
+    for (size_t i = 0; i < this->rows; i++) {
+        for (size_t j = 0; j < m.columns; j++) {
+            for (size_t k = 0; k < this->columns; k++) {
+                newMatrix[i][j] += this->data[i][k] * m.data[k][j];
+            }
+        }
+    }
+
+    return newMatrix;
 }

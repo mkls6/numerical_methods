@@ -22,7 +22,7 @@ public:
 
     Matrix(vector<vector<double> > &);
 
-    tuple<Matrix, Matrix, size_t> LUDecompose(optional<vector<double> * const> = std::nullopt);
+    tuple<Matrix, Matrix, size_t> LUDecompose(optional<vector<double> *const> = std::nullopt);
 
     static double LUDeterminant(Matrix &,
                                 Matrix &,
@@ -33,6 +33,12 @@ public:
                                   vector<double> &);
 
     static Matrix *ReadMatrix(istream &);
+
+    Matrix operator+(const Matrix &);
+
+    Matrix operator-(const Matrix &);
+
+    Matrix operator*(const Matrix &);
 
     vector<double> &operator[](const size_t &index);
 
