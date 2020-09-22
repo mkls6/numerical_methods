@@ -8,12 +8,11 @@
 #include "../hpp/matrix.hpp"
 
 ostream &operator<<(ostream &out, const Matrix &matrix) {
-    out << "Matrix:\n" << std::fixed;
     for (size_t r = 0; r < matrix.rows; r++) {
         for (size_t c = 0; c < matrix.columns; c++) {
-            out << std::setw(14) << std::setprecision(8) << matrix.data[r][c] << " ";
+            out << std::setw(16) << matrix.data[r][c];
         }
-        out << '\n';
+        out << "\n";
     }
 
     return out;
@@ -98,6 +97,7 @@ tuple<Matrix, Matrix, Matrix, size_t> Matrix::LUDecompose() {
 
         // Swap lines if needed
         if (max_pos != i) {
+            std::cout << "Swapping lines " << i + 1 << " and " << max_pos + 1 << "\n";
             std::swap(L[i], L[max_pos]);
             std::swap(U[i], U[max_pos]);
             std::swap(P[i], P[max_pos]);
