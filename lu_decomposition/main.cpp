@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "hpp/matrix.hpp"
+#include "hpp/linear_algebra.hpp"
 
 int main() {
     std::string filePath;
@@ -30,9 +31,13 @@ int main() {
         std::cout << i << " ";
     }
     std::cout << "\nL * U:\n" << L * U << "\n";
-    std::cout << "Inverse m:\n" << ~Matrix::LUInverseMatrix(L, U, P_T) << "\n";
+
+    auto inverseM = ~Matrix::LUInverseMatrix(L, U, P_T);
+    std::cout << "Inverse m:\n" << inverseM << "\n";
     std::cout << "LU - PA:\n" << L * U - P * M << "\n";
     std::cout << "Ax - b:\n" << P * M * ~X - ~B << "\n";
+    std::cout << "Норма 1: " << LAlgebra::CubicNorm(M) * LAlgebra::CubicNorm(inverseM) << "\n";
+    std::cout << "Норма 2: " << LAlgebra::OctahedralNorm(M) * LAlgebra::OctahedralNorm(inverseM) << "\n";
 
     return 0;
 }

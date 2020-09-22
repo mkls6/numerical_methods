@@ -28,6 +28,7 @@ double LAlgebra::OctahedralNorm(Matrix &matrix) {
         }
         if (tmp_sum > max_sum)
             max_sum = tmp_sum;
+        tmp_sum = 0;
     }
 
     return max_sum;
