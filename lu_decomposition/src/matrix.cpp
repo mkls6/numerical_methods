@@ -250,7 +250,7 @@ Matrix Matrix::LUInverseMatrix(Matrix &L, Matrix &U, Matrix &P) {
         inverseMatrix[i] = Matrix::LUSolve(L, U, P[i]);
     }
 
-    return inverseMatrix;
+    return ~inverseMatrix;
 }
 
 Matrix Matrix::operator~() {

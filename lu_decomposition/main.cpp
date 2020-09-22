@@ -55,7 +55,7 @@ int main() {
     }
     std::cout << "\nL * U:\n" << L * U << "\n";
 
-    auto inverseM = ~Matrix::LUInverseMatrix(L, U, P_T);
+    auto inverseM = Matrix::LUInverseMatrix(L, U, P_T);
     std::cout << "Inverse a:\n" << inverseM << "\n";
     std::cout << "LU - PA:\n" << L * U - P * A << "\n";
     std::cout << "Ax - b:\n" << P * A * ~X - ~B << "\n";
