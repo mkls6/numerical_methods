@@ -15,17 +15,14 @@ int main() {
     auto M = *m;
 
     vector<double> b = {18.1000000, 60.7000000, -31.3000000, 11.9000000};
-    vector<vector<double> > t;
-    t.push_back(b);
-    auto B = Matrix(t);
+    auto B = Matrix(b);
 
     auto [L, U, P, permutationsCount] = M.LUDecompose();
     auto P_T = ~P;
 
     B = B * P_T;
     auto x = Matrix::LUSolve(L, U, B[0]);
-    vector<vector<double>> tx; tx.push_back(x);
-    auto X = Matrix(tx);
+    auto X = Matrix(x);
 
     std::cout << "U:\n" << U << "\nL:\n" << L << "\nP_N: " << permutationsCount << std::endl;
     std::cout << Matrix::LUDeterminant(L, U, permutationsCount) << "\n";

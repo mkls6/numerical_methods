@@ -140,6 +140,13 @@ Matrix::Matrix(size_t rows, size_t columns) {
 
 Matrix::Matrix(size_t n) : Matrix(n, n) {}
 
+Matrix::Matrix(vector<double> &v) {
+    this->rows = 1;
+    this->columns = v.size();
+
+    this->data.push_back(v);
+}
+
 Matrix::Matrix(vector<vector<double>> &data) {
     assert(!data.empty() && !data[0].empty() && "Empty vectors were provided.");
 

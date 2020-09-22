@@ -17,6 +17,8 @@ public:
 
     Matrix(size_t);
 
+    Matrix(vector<double> &);
+
     Matrix(vector<vector<double> > &);
 
     tuple<Matrix, Matrix, Matrix, size_t> LUDecompose();
@@ -32,7 +34,9 @@ public:
     static Matrix LUInverseMatrix(Matrix &, Matrix &, Matrix &);
 
     static Matrix *ReadMatrix(istream &);
+
     static Matrix *ReadMatrix(istream &, size_t);
+
     static Matrix *ReadMatrix(istream &, size_t, size_t);
 
     Matrix operator+(const Matrix &);
@@ -48,6 +52,7 @@ public:
     friend ostream &operator<<(ostream &, const Matrix &);
 
     size_t Rows() const;
+
     size_t Columns() const;
 
 private:
