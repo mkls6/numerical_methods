@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "hpp/matrix.hpp"
 #include "hpp/linear_algebra.hpp"
 
@@ -7,8 +8,10 @@ int main() {
     std::string filePath;
     std::cin >> filePath;
     std::ifstream inputFile(filePath);
+    size_t n;
 
-    Matrix *m = Matrix::ReadMatrix(inputFile);
+    inputFile >> n;
+    Matrix *m = Matrix::ReadMatrix(inputFile, n);
     auto M = *m;
 
     vector<double> b = {18.1000000, 60.7000000, -31.3000000, 11.9000000};

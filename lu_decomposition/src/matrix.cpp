@@ -1,5 +1,6 @@
 #include <cassert>
 #include <string>
+#include <sstream>
 #include <iomanip>
 #include <cmath>
 #include <iostream>
@@ -165,6 +166,23 @@ Matrix *Matrix::ReadMatrix(istream &in) {
 
     return new Matrix(lines);
 }
+
+Matrix *Matrix::ReadMatrix(istream &in, size_t n) {
+    return Matrix::ReadMatrix(in, n, n);
+}
+
+Matrix *Matrix::ReadMatrix(istream &in, size_t rows, size_t columns) {
+    auto *m = new Matrix(rows, columns);
+
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < columns; j++) {
+            in >> (*m)[i][j];
+        }
+    }
+
+    return m;
+}
+
 
 vector<double> &Matrix::operator[](const size_t &index) {
     return this->data[index];

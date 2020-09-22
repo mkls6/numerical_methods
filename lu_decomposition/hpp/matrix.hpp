@@ -32,6 +32,8 @@ public:
     static Matrix LUInverseMatrix(Matrix &, Matrix &, Matrix &);
 
     static Matrix *ReadMatrix(istream &);
+    static Matrix *ReadMatrix(istream &, size_t);
+    static Matrix *ReadMatrix(istream &, size_t, size_t);
 
     Matrix operator+(const Matrix &);
 
