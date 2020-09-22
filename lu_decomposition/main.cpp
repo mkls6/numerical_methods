@@ -7,20 +7,13 @@
 #include "hpp/linear_algebra.hpp"
 
 int main() {
-    std::string filePath;
+    std::string filePath = "input.txt";
     std::ifstream inputFile;
     std::ofstream outputFile;
     size_t n;
     Matrix *a;
     vector<double> b;
     vector<double> referenceX;
-
-    std::cin >> filePath;
-
-    if (filePath.empty()) {
-        std::cout << "Will try to open input.txt\n";
-        filePath = "input.txt";
-    }
 
     inputFile.exceptions(std::ifstream::badbit | std::ifstream::failbit);
     outputFile.exceptions(std::ofstream::badbit | std::ofstream::failbit);
@@ -62,7 +55,7 @@ int main() {
     inputFile.close();
 
     try {
-        outputFile.open("output");
+        outputFile.open("output.txt");
         std::cout.rdbuf(outputFile.rdbuf());
     } catch (std::ios_base::failure &) {
         std::cout << "Failed to write to output file. Writing to stdout instead.\n";
@@ -93,7 +86,7 @@ int main() {
         std::cout << std::setw(16) << x[i] - referenceX[i];
     }
 
-    std::cout << "\n\nL * U:\n" << std::fixed << std::setprecision(8) << L * U << "\n";
+    std::cout << "\n\nP * L * U:\n" << std::fixed << std::setprecision(8) << P_T * L * U << "\n";
 
     std::cout << "Inverse A:\n" << inverseA << "\n";
     std::cout << "LU - PA:\n" << std::scientific << std::setprecision(6) << L * U - P * A << "\n";
