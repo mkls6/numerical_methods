@@ -16,8 +16,9 @@ int main() {
     auto B = Matrix(t);
 
     auto [L, U, P, permutationsCount] = M.LUDecompose();
+    auto P_T = ~P;
 
-    B = B * ~P;
+    B = B * P_T;
     auto x = Matrix::LUSolve(L, U, B[0]);
     vector<vector<double>> tx; tx.push_back(x);
     auto X = Matrix(tx);
@@ -29,7 +30,7 @@ int main() {
         std::cout << i << " ";
     }
     std::cout << "\nL * U:\n" << L * U << "\n";
-    std::cout << "Inverse m:\n" << ~Matrix::LUInverseMatrix(L, U, P) << "\n";
+    std::cout << "Inverse m:\n" << ~Matrix::LUInverseMatrix(L, U, P_T) << "\n";
     std::cout << "LU - PA:\n" << L * U - P * M << "\n";
     std::cout << "Ax - b:\n" << P * M * ~X - ~B << "\n";
 
