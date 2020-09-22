@@ -14,7 +14,14 @@ int main() {
     Matrix *m = Matrix::ReadMatrix(inputFile, n);
     auto M = *m;
 
-    vector<double> b = {18.1000000, 60.7000000, -31.3000000, 11.9000000};
+    vector<double> b(n, 0);
+    for (size_t i = 0; i < n; i++)
+        inputFile >> b[i];
+
+    vector<double> referenceX(n, 0);
+    for (size_t i = 0; i < n; i++)
+        inputFile >> referenceX[i];
+
     auto B = Matrix(b);
 
     auto [L, U, P, permutationsCount] = M.LUDecompose();
@@ -29,6 +36,10 @@ int main() {
     std::cout << "\nComputed X:\n";
     for (auto i : x) {
         std::cout << i << " ";
+    }
+    std::cout << "\nX - X_ref:\n";
+    for (size_t i = 0; i < n; i++) {
+        std::cout << x[i] - referenceX[i] << " ";
     }
     std::cout << "\nL * U:\n" << L * U << "\n";
 
