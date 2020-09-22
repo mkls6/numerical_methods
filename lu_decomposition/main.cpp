@@ -7,7 +7,19 @@
 int main() {
     std::string filePath;
     std::cin >> filePath;
-    std::ifstream inputFile(filePath);
+    if (filePath.empty()) {
+        std::cout << "Will try to open input.txt\n";
+        filePath = "input.txt";
+    }
+
+    std::ifstream inputFile;
+
+    try {
+        inputFile.open(filePath);
+    } catch (std::exception &e) {
+        std::cout << "Failed to open file " << filePath << "." << std::endl;
+        exit(1);
+    }
     size_t n;
 
     inputFile >> n;
@@ -47,8 +59,10 @@ int main() {
     std::cout << "Inverse m:\n" << inverseM << "\n";
     std::cout << "LU - PA:\n" << L * U - P * M << "\n";
     std::cout << "Ax - b:\n" << P * M * ~X - ~B << "\n";
-    std::cout << "Норма 1: " << LAlgebra::CubicNorm(M) * LAlgebra::CubicNorm(inverseM) << "\n";
-    std::cout << "Норма 2: " << LAlgebra::OctahedralNorm(M) * LAlgebra::OctahedralNorm(inverseM) << "\n";
+    std::cout << "Cubic norm: " << LAlgebra::CubicNorm(M) * LAlgebra::CubicNorm(inverseM) << "\n";
+    std::cout << "Octahedral norm: " << LAlgebra::OctahedralNorm(M) * LAlgebra::OctahedralNorm(inverseM) << "\n";
+
+    std::cout << "Euclidean norm: " << LAlgebra::EuclideanNorm(M) * LAlgebra::EuclideanNorm(inverseM) << "\n";
 
     return 0;
 }

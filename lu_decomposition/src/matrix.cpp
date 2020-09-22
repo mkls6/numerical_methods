@@ -117,6 +117,7 @@ tuple<Matrix, Matrix, Matrix, size_t> Matrix::LUDecompose() {
             }
         }
 
+        // Divide line by pivot value
         auto temp = U[i][i];
         for (size_t k = i; k < n; k++) {
             U[i][k] /= temp;

@@ -1,6 +1,8 @@
 #ifndef LAB2_LINEAR_ALGEBRA_HPP
 #define LAB2_LINEAR_ALGEBRA_HPP
 
+#include <vector>
+
 #include "matrix.hpp"
 
 class LAlgebra {
@@ -11,7 +13,7 @@ public:
 
     static double EuclideanNorm(Matrix &);
 
-    static double JacobiRotation();
+    static std::vector<double> JacobiEigen(Matrix &);
 };
 
 #endif
