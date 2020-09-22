@@ -200,7 +200,7 @@ Matrix Matrix::operator-(const Matrix &m) {
 
 Matrix Matrix::operator*(const Matrix &m) {
     if (this->columns != m.rows)
-        throw std::invalid_argument("A x B: A row count must be equal to B column count.");
+        throw std::invalid_argument("A x B: A column count must be equal to B row count.");
 
     auto newMatrix = Matrix(this->rows, m.columns);
 
@@ -235,4 +235,12 @@ Matrix Matrix::operator~() {
         }
     }
     return newMatrix;
+}
+
+size_t Matrix::Rows() const {
+    return this->rows;
+}
+
+size_t Matrix::Columns() const {
+    return this->columns;
 }

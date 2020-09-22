@@ -18,16 +18,20 @@ int main() {
     auto [L, U, P, permutationsCount] = M.LUDecompose();
 
     B = B * ~P;
+    auto x = Matrix::LUSolve(L, U, B[0]);
+    vector<vector<double>> tx; tx.push_back(x);
+    auto X = Matrix(tx);
 
     std::cout << "U:\n" << U << "\nL:\n" << L << "\nP_N: " << permutationsCount << std::endl;
     std::cout << Matrix::LUDeterminant(L, U, permutationsCount) << "\n";
     std::cout << "\nComputed X:\n";
-    for (auto i : Matrix::LUSolve(L, U, B[0])) {
+    for (auto i : x) {
         std::cout << i << " ";
     }
     std::cout << "\nL * U:\n" << L * U << "\n";
     std::cout << "Inverse m:\n" << ~Matrix::LUInverseMatrix(L, U, P) << "\n";
     std::cout << "LU - PA:\n" << L * U - P * M << "\n";
+    std::cout << "Ax - b:\n" << P * M * ~X - ~B << "\n";
 
     return 0;
 }

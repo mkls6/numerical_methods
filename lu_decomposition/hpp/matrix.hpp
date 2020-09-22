@@ -45,6 +45,9 @@ public:
 
     friend ostream &operator<<(ostream &, const Matrix &);
 
+    size_t Rows() const;
+    size_t Columns() const;
+
 private:
     size_t rows;
     size_t columns;
