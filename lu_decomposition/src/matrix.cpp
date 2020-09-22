@@ -74,7 +74,8 @@ size_t findMax(vector<vector<double> > &src, size_t i, size_t j) {
     return max_pos.first;
 }
 
-tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<double> * const> permutations) {
+// Return L, U, P, number of permutations
+tuple<Matrix, Matrix, Matrix, size_t> Matrix::LUDecompose() {
     assert(this->rows == this->columns && "Unable to perform LU decomposition on non-square matrix");
 
     size_t n = this->rows;
@@ -82,6 +83,10 @@ tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<double> * cons
 
     vector<vector<double> > L(n, vector<double>(n, 0));
     vector<vector<double> > U(this->data);
+    vector<vector<double> > P(n, vector<double>(n, 0));
+
+    for (size_t i = 0; i < n; i++)
+        P[i][i] = 1;
 
     for (size_t i = 0; i < n; i++) {
         std::cout << "Step " << i + 1 << "\n";
@@ -94,11 +99,8 @@ tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<double> * cons
         if (max_pos != i) {
             std::swap(L[i], L[max_pos]);
             std::swap(U[i], U[max_pos]);
+            std::swap(P[i], P[max_pos]);
             permutationsCount++;
-
-            if (permutations.has_value())
-                std::swap(permutations.value()->data()[i],
-                          permutations.value()->data()[max_pos]);
         }
 
         // L[i][j] = U[i][j] - SUM(L[i][k] * U[k][i]), k = 1..(j-1)
@@ -122,7 +124,7 @@ tuple<Matrix, Matrix, size_t> Matrix::LUDecompose(optional<vector<double> * cons
         std::cout << "L:\n" << L << "\nU:\n" << U << "\n";
     }
 
-    return {U, L, permutationsCount};
+    return {U, L, P, permutationsCount};
 }
 
 Matrix::Matrix(size_t rows, size_t columns) {
@@ -164,7 +166,7 @@ Matrix *Matrix::ReadMatrix(istream &in) {
     return new Matrix(lines);
 }
 
-vector<double>& Matrix::operator[](const size_t &index) {
+vector<double> &Matrix::operator[](const size_t &index) {
     return this->data[index];
 }
 
@@ -182,7 +184,7 @@ Matrix Matrix::operator+(const Matrix &m) {
     return newMatrix;
 }
 
-Matrix Matrix::operator-(const Matrix& m) {
+Matrix Matrix::operator-(const Matrix &m) {
     if (this->rows != m.rows || this->columns != m.columns)
         throw std::invalid_argument("Unequal matrix sizes");
 
@@ -197,7 +199,7 @@ Matrix Matrix::operator-(const Matrix& m) {
 }
 
 Matrix Matrix::operator*(const Matrix &m) {
-    if (this->columns!= m.rows)
+    if (this->columns != m.rows)
         throw std::invalid_argument("A x B: A row count must be equal to B column count.");
 
     auto newMatrix = Matrix(this->rows, m.columns);
@@ -210,5 +212,27 @@ Matrix Matrix::operator*(const Matrix &m) {
         }
     }
 
+    return newMatrix;
+}
+
+Matrix Matrix::LUInverseMatrix(Matrix &L, Matrix &U, Matrix &P) {
+    assert(L.rows == U.rows && L.columns == U.columns && L.rows == L.columns);
+
+    auto inverseMatrix = Matrix(L.rows, L.columns);
+
+    for (size_t i = 0; i < L.rows; i++) {
+        inverseMatrix[i] = Matrix::LUSolve(L, U, P[i]);
+    }
+
+    return inverseMatrix;
+}
+
+Matrix Matrix::operator~() {
+    auto newMatrix = Matrix(this->columns, this->rows);
+    for (size_t i = 0; i < this->rows; i++) {
+        for (size_t j = 0; j < this->columns; j++) {
+            newMatrix[j][i] = this->data[i][j];
+        }
+    }
     return newMatrix;
 }
