@@ -39,7 +39,6 @@ double LAlgebra::EuclideanNorm(Matrix &m) {
     auto mT = ~m;
     auto mul = mT * m;
     auto eigenValues = JacobiEigen(mul);
-    double maxEigenValue = 0;
 
     return sqrt(*(std::max_element(eigenValues.begin(), eigenValues.end())));
 }
@@ -57,8 +56,9 @@ double offValue(Matrix &m) {
 }
 
 std::vector<double> LAlgebra::JacobiEigen(Matrix &m) {
-    double threshold = 1e-7;
+    double threshold = 1e-10;
     double pivot;
+    double currentOffValue, prevOffValue;
     std::pair<size_t, size_t> pivotPos;
     auto rotation = Matrix(m.Rows());
     auto copy = Matrix(m);
@@ -66,8 +66,12 @@ std::vector<double> LAlgebra::JacobiEigen(Matrix &m) {
     for (size_t i = 0; i < rotation.Rows(); i++)
         rotation[i][i] = 1;
 
-    while (offValue(copy) > threshold) {
+    prevOffValue = currentOffValue = offValue(copy);
+    prevOffValue += 10;
+
+    while (currentOffValue > threshold && fabs(currentOffValue - prevOffValue) > threshold) {
         for (size_t i = 0; i < copy.Rows(); i++) {
+            // Reset the pivot
             pivot = 0;
             pivotPos = {i, i};
 
@@ -83,7 +87,7 @@ std::vector<double> LAlgebra::JacobiEigen(Matrix &m) {
                 }
             }
 
-            // Calculate cos^2(theta) and sin^2(theta)
+            // Calculate cos(theta) and s(theta)
             auto[p, q] = pivotPos;
             double angleTmp = 2 * copy[p][q] / (copy[p][p] - copy[q][q]);
             auto sign = (angleTmp > 0) - (angleTmp < 0);
@@ -97,10 +101,14 @@ std::vector<double> LAlgebra::JacobiEigen(Matrix &m) {
 
             // Perform rotation
             copy = ~rotation * copy * rotation;
+
             // Reset rotation matrix
             rotation[p][q] = rotation[q][p] = 0;
             rotation[p][p] = rotation[q][q] = 1;
         }
+
+        prevOffValue = currentOffValue;
+        currentOffValue = offValue(copy);
     }
 
     vector<double> eigenValues(copy.Rows());

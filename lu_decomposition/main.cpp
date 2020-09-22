@@ -23,8 +23,8 @@ int main() {
     size_t n;
 
     inputFile >> n;
-    Matrix *m = Matrix::ReadMatrix(inputFile, n);
-    auto M = *m;
+    Matrix *a = Matrix::ReadMatrix(inputFile, n);
+    auto A = *a;
 
     vector<double> b(n, 0);
     for (size_t i = 0; i < n; i++)
@@ -36,7 +36,7 @@ int main() {
 
     auto B = Matrix(b);
 
-    auto [L, U, P, permutationsCount] = M.LUDecompose();
+    auto [L, U, P, permutationsCount] = A.LUDecompose();
     auto P_T = ~P;
 
     B = B * P_T;
@@ -56,13 +56,12 @@ int main() {
     std::cout << "\nL * U:\n" << L * U << "\n";
 
     auto inverseM = ~Matrix::LUInverseMatrix(L, U, P_T);
-    std::cout << "Inverse m:\n" << inverseM << "\n";
-    std::cout << "LU - PA:\n" << L * U - P * M << "\n";
-    std::cout << "Ax - b:\n" << P * M * ~X - ~B << "\n";
-    std::cout << "Cubic norm: " << LAlgebra::CubicNorm(M) * LAlgebra::CubicNorm(inverseM) << "\n";
-    std::cout << "Octahedral norm: " << LAlgebra::OctahedralNorm(M) * LAlgebra::OctahedralNorm(inverseM) << "\n";
-
-    std::cout << "Euclidean norm: " << LAlgebra::EuclideanNorm(M) * LAlgebra::EuclideanNorm(inverseM) << "\n";
+    std::cout << "Inverse a:\n" << inverseM << "\n";
+    std::cout << "LU - PA:\n" << L * U - P * A << "\n";
+    std::cout << "Ax - b:\n" << P * A * ~X - ~B << "\n";
+    std::cout << "Cubic norm: " << LAlgebra::CubicNorm(A) * LAlgebra::CubicNorm(inverseM) << "\n";
+    std::cout << "Octahedral norm: " << LAlgebra::OctahedralNorm(A) * LAlgebra::OctahedralNorm(inverseM) << "\n";
+    std::cout << "Euclidean norm: " << LAlgebra::EuclideanNorm(A) * LAlgebra::EuclideanNorm(inverseM) << "\n";
 
     return 0;
 }
