@@ -18,8 +18,19 @@ double LAlgebra::CubicNorm(Matrix &matrix) {
     return max_sum;
 }
 
-double LAlgebra::OctahedralNorm(Matrix &) {
-    return 0;
+double LAlgebra::OctahedralNorm(Matrix &matrix) {
+    double max_sum = 0;
+    double tmp_sum = 0;
+
+    for (size_t i = 0; i < matrix.Rows(); i++) {
+        for (size_t j = 0; j < matrix.Columns(); j++) {
+            tmp_sum += fabs(matrix[j][i]);
+        }
+        if (tmp_sum > max_sum)
+            max_sum = tmp_sum;
+    }
+
+    return max_sum;
 }
 
 double LAlgebra::EuclideanNorm(Matrix &) {
