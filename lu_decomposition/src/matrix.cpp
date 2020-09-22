@@ -124,7 +124,7 @@ tuple<Matrix, Matrix, Matrix, size_t> Matrix::LUDecompose() {
         std::cout << "L:\n" << L << "\nU:\n" << U << "\n";
     }
 
-    return {U, L, P, permutationsCount};
+    return {L, U, P, permutationsCount};
 }
 
 Matrix::Matrix(size_t rows, size_t columns) {

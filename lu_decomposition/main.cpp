@@ -8,17 +8,16 @@ int main() {
     std::ifstream inputFile(filePath);
 
     Matrix *m = Matrix::ReadMatrix(inputFile);
+    auto M = *m;
 
     vector<double> b = {18.1000000, 60.7000000, -31.3000000, 11.9000000};
     vector<vector<double> > t;
     t.push_back(b);
     auto B = Matrix(t);
 
-    auto [U, L, P, permutationsCount] = m->LUDecompose();
+    auto [L, U, P, permutationsCount] = M.LUDecompose();
 
-    P = ~P;
-    B = B * P;
-    *m = *m * P;
+    B = B * ~P;
 
     std::cout << "U:\n" << U << "\nL:\n" << L << "\nP_N: " << permutationsCount << std::endl;
     std::cout << Matrix::LUDeterminant(L, U, permutationsCount) << "\n";
@@ -28,6 +27,7 @@ int main() {
     }
     std::cout << "\nL * U:\n" << L * U << "\n";
     std::cout << "Inverse m:\n" << ~Matrix::LUInverseMatrix(L, U, P) << "\n";
+    std::cout << "LU - PA:\n" << L * U - P * M << "\n";
 
     return 0;
 }
