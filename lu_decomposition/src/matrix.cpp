@@ -60,18 +60,32 @@ vector<double> Matrix::LUSolve(Matrix &L, Matrix &U, vector<double> &b) {
     return X;
 }
 
-size_t findMax(vector<vector<double> > &src, size_t i, size_t j) {
-    std::pair<size_t, size_t> max_pos = {i, j};
-    double max_element = src[i][j];
+std::pair<size_t, size_t> findMax(Matrix &m, size_t i, size_t j) {
+    std::pair<size_t, size_t> maxPos = {i, j};
+    double maxElement = m[i][j];
 
-    for (size_t k = i + 1; k < src[0].size(); k++) {
-        if (fabs(src[k][j]) > fabs(max_element)) {
-            max_element = src[k][j];
-            max_pos = {k, j};
+    for (size_t k = i + 1; k < m[0].size(); k++) {
+        if (fabs(m[k][j]) > fabs(maxElement)) {
+            maxElement = m[k][j];
+            maxPos = {k, j};
         }
     }
 
-    return max_pos.first;
+    return maxPos;
+}
+
+size_t findMax(vector<vector<double> > &src, size_t i, size_t j) {
+    std::pair<size_t, size_t> maxPos = {i, j};
+    double maxElement = src[i][j];
+
+    for (size_t k = i + 1; k < src[0].size(); k++) {
+        if (fabs(src[k][j]) > fabs(maxElement)) {
+            maxElement = src[k][j];
+            maxPos = {k, j};
+        }
+    }
+
+    return maxPos.first;
 }
 
 // Return L, U, P, number of permutations
@@ -81,26 +95,26 @@ tuple<Matrix, Matrix, Matrix, size_t> Matrix::LUDecompose() {
     size_t n = this->rows;
     size_t permutationsCount = 0;
 
-    vector<vector<double> > L(n, vector<double>(n, 0));
-    vector<vector<double> > U(this->data);
-    vector<vector<double> > P(n, vector<double>(n, 0));
+    Matrix L(n);
+    Matrix P(n);
+    Matrix U(this->data);
 
     for (size_t i = 0; i < n; i++)
         P[i][i] = 1;
 
     for (size_t i = 0; i < n; i++) {
         std::cout << "Step " << i + 1 << "\n";
-        auto max_pos = findMax(U, i, i);
+        auto maxPos = findMax(U, i, i).first;
         // Check if max value is zero or really close to zero
-        if (fabs(U[i][max_pos]) < 1e-8)
+        if (fabs(U[i][maxPos]) < 1e-8)
             throw std::invalid_argument("Max element is within [0:1e-8]. Aborting.");
 
         // Swap lines if needed
-        if (max_pos != i) {
-            std::cout << "Swapping lines " << i + 1 << " and " << max_pos + 1 << "\n";
-            std::swap(L[i], L[max_pos]);
-            std::swap(U[i], U[max_pos]);
-            std::swap(P[i], P[max_pos]);
+        if (maxPos != i) {
+            std::cout << "Swapping lines " << i + 1 << " and " << maxPos + 1 << "\n";
+            std::swap(L[i], L[maxPos]);
+            std::swap(U[i], U[maxPos]);
+            std::swap(P[i], P[maxPos]);
             permutationsCount++;
         }
 
