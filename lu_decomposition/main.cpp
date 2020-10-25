@@ -3,8 +3,8 @@
 #include <string>
 #include <iomanip>
 
-#include "hpp/matrix.hpp"
-#include "hpp/linear_algebra.hpp"
+#include "../include/matrix.hpp"
+#include "../include/linear_algebra.hpp"
 
 int main() {
     std::string filePath = "input.txt";

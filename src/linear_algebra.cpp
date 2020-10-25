@@ -1,4 +1,4 @@
-#include "../hpp/linear_algebra.hpp"
+#include "../include/linear_algebra.hpp"
 #include <cmath>
 #include <algorithm>
 
