@@ -53,6 +53,14 @@ double ddf2_y(double x, double y) {
     return -cos(0.5 - y);
 }
 
+double ddf1(double x, double y) {
+    return 4 * (sin(0.5 - y) + 2 * x - 1) - 2 * sin(x) * (cos(x) + y - 1.5);
+}
+
+double ddf2(double x, double y) {
+    return 2 * ((-cos(0.5 - y)) * (sin(0.5 - y) + 2 * x - 1) + cos(x) + y - 1.5);
+}
+
 double f1N(double y) {
 //    return 1 - cos(x) / 2;
     return (1 - sin(0.5 - y)) / 2;
@@ -77,7 +85,9 @@ int main() {
     vector<vector<function<double(double, double)>>> derivatives(2,
                                                                  vector<function<double(double, double)>>(2));
     vector<vector<function<double(double, double)>>> derivatives1(2,
-                                                                 vector<function<double(double, double)>>(2));
+                                                                  vector<function<double(double, double)>>(2));
+    vector<function<double(double, double)>> derivatives2(2);
+
     // Holy crap
     derivatives[0][0] = df1_x;
     derivatives[0][1] = df1_y;
@@ -88,6 +98,9 @@ int main() {
     derivatives1[0][1] = ddf1_y;
     derivatives1[1][0] = ddf2_x;
     derivatives1[1][1] = ddf2_y;
+
+    derivatives2[0] = ddf1;
+    derivatives2[1] = ddf2;
 
     nFunctions[0] = f1N;
     nFunctions[1] = f2N;
@@ -101,6 +114,8 @@ int main() {
     res = LAlgebra::NLNewtonSolve(x0, y0, functions, derivatives, derivatives1);
 
     // Solve using gradient descent
+    std::cout << "\nGradient descent:\n";
+    res = LAlgebra::NLGradientDescentSolve(x0, y0, alpha, lambda, functions, derivatives2, derivatives);
 
     return 0;
 }

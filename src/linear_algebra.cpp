@@ -7,7 +7,6 @@
 double LAlgebra::CubicNorm(Matrix &matrix) {
     double max_sum = 0;
     double tmp_sum = 0;
-
     for (size_t i = 0; i < matrix.Rows(); i++) {
         for (size_t j = 0; j < matrix.Columns(); j++) {
             tmp_sum += fabs(matrix[i][j]);
@@ -263,4 +262,75 @@ Matrix LAlgebra::NLNewtonSolve(double x0,
 
     vector<double> result({x, y});
     return result;
+}
+
+double targetFunc(double x,
+                  double y,
+                  const std::function<double(double, double)>&f1,
+                  const std::function<double(double, double)>&f2) {
+    return pow(f1(x, y), 2) + pow(f2(x, y), 2);
+}
+
+Matrix LAlgebra::NLGradientDescentSolve(double x0,
+                                        double y0,
+                                        double alpha,
+                                        double lambda,
+                                        vector<std::function<double(double, double)>> &functions,
+                                        vector<std::function<double(double, double)>> &derivatives2,
+                                        vector<vector<std::function<double(double, double)>>> &derivatives) {
+    double x = x0;
+    double y = y0;
+    double residualNorm = 0;
+    double q = 0;
+
+    auto f1 = functions[0];
+    auto f2 = functions[1];
+
+    size_t iter = 0;
+
+    Matrix derivativeVec(1, 2);
+    Matrix Jacobian(2, 2);
+
+    do {
+        iter++;
+
+        // Update derivative vector with new values
+        for (size_t i = 0; i < derivatives2.size(); i++) {
+            derivativeVec[0][i] = derivatives2[i](x0, y0);
+        }
+
+        // Update Jacobian
+        for (size_t i = 0; i < Jacobian.Rows(); i++) {
+            for (size_t j = 0; j < Jacobian.Columns(); j++) {
+                Jacobian[i][j] = derivatives[i][j](x, y);
+            }
+        }
+
+        while (targetFunc(x0 - alpha * derivativeVec[0][0],
+                          y0 - alpha * derivativeVec[0][1],
+                          f1, f2) >= targetFunc(x0, y0, f1, f2))
+            alpha *= lambda;
+
+        x = x0 - alpha * derivativeVec[0][0];
+        y = y0 - alpha * derivativeVec[0][1];
+
+        q = CubicNorm(Jacobian);
+        residualNorm = std::max(fabs(x - x0), fabs(y - y0)) * (1 - q) / q;
+        std::cout << std::setprecision(10)
+                  << std::setw(18) << iter
+                  << std::setw(18) << x
+                  << std::setw(18) << y
+                  << std::setw(18) << residualNorm
+                  << std::setw(18) << f1(x, y)
+                  << std::setw(18) << f2(x, y)
+                  << std::setw(18) << q
+                  << std::setw(18) << alpha
+                  << "\n";
+
+        x0 = x;
+        y0 = y;
+
+    } while (residualNorm > eps);
+
+    return Matrix(0, 0);
 }

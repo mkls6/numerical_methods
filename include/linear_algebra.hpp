@@ -31,7 +31,11 @@ public:
 
     static Matrix NLGradientDescentSolve(double,
                                          double,
-                                         vector<vector<std::function<double(double, double)> > > &);
+                                         double,
+                                         double,
+                                         vector<std::function<double(double, double)>> &,
+                                         vector<std::function<double(double, double)>> &,
+                                         vector<vector<std::function<double(double, double)>>> &);
 };
 
 #endif
