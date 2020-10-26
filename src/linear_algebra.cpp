@@ -1,6 +1,8 @@
 #include "../include/linear_algebra.hpp"
 #include <cmath>
 #include <algorithm>
+#include <iostream>
+#include <iomanip>
 
 double LAlgebra::CubicNorm(Matrix &matrix) {
     double max_sum = 0;
@@ -118,4 +120,70 @@ std::vector<double> LAlgebra::JacobiEigen(Matrix &m) {
     }
 
     return eigenValues;
+}
+
+Matrix LAlgebra::NLSimpleIterSolve(double x0,
+                                   double y0,
+                                   vector<std::function<double(double, double)>> &functions,
+                                   vector<std::function<double(double)>> &stdFunctions,
+                                   vector<vector<std::function<double(double, double)>>> &derivatives) {
+    double x = x0;
+    double y = y0;
+    double residualNorm = 0;
+    double q = 0;
+
+    auto f1 = functions[0];
+    auto f2 = functions[1];
+    auto f1n = stdFunctions[0];
+    auto f2n = stdFunctions[1];
+
+    size_t iter = 0;
+
+    Matrix Jacobian(2, 2);
+    for (size_t i = 0; i < Jacobian.Rows(); i++) {
+        for (size_t j = 0; j < Jacobian.Columns(); j++) {
+            Jacobian[i][j] = derivatives[i][j](x0, y0);
+        }
+    }
+
+    std::cout << "Jacobian:\n" << Jacobian << "\n";
+    std::cout << "Jacobian norm:\n" << CubicNorm(Jacobian) << "\n";
+    std::cout << std::setw(18) << "Itr"
+              << std::setw(18)  << "x"
+              << std::setw(18) << "y"
+              << std::setw(18) << "Residual norm"
+              << std::setw(18) << "F1"
+              << std::setw(18) << "F2"
+              << std::setw(18) << "Jacobian norm"
+              << "\n";
+
+    do {
+        iter++;
+
+        x = f1n(y0);
+        y = f2n(x0);
+
+        for (size_t i = 0; i < Jacobian.Rows(); i++) {
+            for (size_t j = 0; j < Jacobian.Columns(); j++) {
+                Jacobian[i][j] = derivatives[i][j](x, y);
+            }
+        }
+        q = CubicNorm(Jacobian);
+        residualNorm = std::max(fabs(x - x0), fabs(y - y0)) * (1 - q) / q;
+        std::cout << std::setprecision(10)
+                  << std::setw(18) << iter
+                  << std::setw(18) << x
+                  << std::setw(18) << y
+                  << std::setw(18) << residualNorm
+                  << std::setw(18) << f1(x, y)
+                  << std::setw(18) << f2(x, y)
+                  << std::setw(18) << q
+                  << "\n";
+
+        x0 = x;
+        y0 = y;
+    } while (residualNorm > eps);
+
+    vector<double> result({x, y});
+    return result;
 }
