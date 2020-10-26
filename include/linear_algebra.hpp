@@ -8,7 +8,7 @@
 
 class LAlgebra {
 public:
-    static constexpr double eps = 1e-16;
+    static constexpr double eps = 1e-4;
     static double CubicNorm(Matrix &);
 
     static double OctahedralNorm(Matrix &);
@@ -23,10 +23,14 @@ public:
                                     vector<std::function<double(double)>> &,
                                     vector<vector<std::function<double(double, double)> > > &);
 
-    static Matrix NLNewtonSolve(Matrix &,
+    static Matrix NLNewtonSolve(double,
+                                double,
+                                vector<std::function<double(double, double)>> &,
+                                vector<vector<std::function<double(double, double)> > > &,
                                 vector<vector<std::function<double(double, double)> > > &);
 
-    static Matrix NLGradientDescentSolve(Matrix &,
+    static Matrix NLGradientDescentSolve(double,
+                                         double,
                                          vector<vector<std::function<double(double, double)> > > &);
 };
 

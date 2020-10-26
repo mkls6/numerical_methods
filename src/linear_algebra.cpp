@@ -122,6 +122,15 @@ std::vector<double> LAlgebra::JacobiEigen(Matrix &m) {
     return eigenValues;
 }
 
+void simpleReverse(Matrix &m) {
+    double det = m[0][0] * m[1][1] - m[0][1] * m[1][0];
+    for (int i = 0; i < m.Rows(); i++)
+        for (int j = 0; j < m.Columns(); j++)
+            m[i][j] /= (i + j == 1) ? -det : det;
+    std::swap(m[0][0], m[1][1]);
+}
+
+
 Matrix LAlgebra::NLSimpleIterSolve(double x0,
                                    double y0,
                                    vector<std::function<double(double, double)>> &functions,
@@ -149,7 +158,7 @@ Matrix LAlgebra::NLSimpleIterSolve(double x0,
     std::cout << "Jacobian:\n" << Jacobian << "\n";
     std::cout << "Jacobian norm:\n" << CubicNorm(Jacobian) << "\n";
     std::cout << std::setw(18) << "Itr"
-              << std::setw(18)  << "x"
+              << std::setw(18) << "x"
               << std::setw(18) << "y"
               << std::setw(18) << "Residual norm"
               << std::setw(18) << "F1"
@@ -168,6 +177,74 @@ Matrix LAlgebra::NLSimpleIterSolve(double x0,
                 Jacobian[i][j] = derivatives[i][j](x, y);
             }
         }
+        q = CubicNorm(Jacobian);
+        residualNorm = std::max(fabs(x - x0), fabs(y - y0)) * (1 - q) / q;
+        std::cout << std::setprecision(10)
+                  << std::setw(18) << iter
+                  << std::setw(18) << x
+                  << std::setw(18) << y
+                  << std::setw(18) << residualNorm
+                  << std::setw(18) << f1(x, y)
+                  << std::setw(18) << f2(x, y)
+                  << std::setw(18) << q
+                  << "\n";
+
+        x0 = x;
+        y0 = y;
+    } while (residualNorm > eps);
+
+    vector<double> result({x, y});
+    return result;
+}
+
+Matrix LAlgebra::NLNewtonSolve(double x0,
+                               double y0,
+                               vector<std::function<double(double, double)>> &functions,
+                               vector<vector<std::function<double(double, double)>>> &derivatives,
+                               vector<vector<std::function<double(double, double)>>> &derivatives1) {
+    double x = x0;
+    double y = y0;
+    double residualNorm = 0;
+    double q = 0;
+
+    size_t iter = 0;
+
+    Matrix derivativeMatrix(2, 2);
+    Matrix Jacobian(2, 2);
+
+    auto f1 = functions[0];
+    auto f2 = functions[1];
+
+    std::cout << std::setw(18) << "Itr"
+              << std::setw(18) << "x"
+              << std::setw(18) << "y"
+              << std::setw(18) << "Residual norm"
+              << std::setw(18) << "F1"
+              << std::setw(18) << "F2"
+              << std::setw(18) << "Jacobian norm"
+              << "\n";
+
+    do {
+        iter++;
+
+        derivativeMatrix[0][0] = derivatives1[0][0](x, y);
+        derivativeMatrix[0][1] = derivatives1[0][1](x, y);
+        derivativeMatrix[1][0] = derivatives1[1][0](x, y);
+        derivativeMatrix[1][1] = derivatives1[1][1](x, y);
+        simpleReverse(derivativeMatrix);
+
+        auto f1Value = f1(x0, y0);
+        auto f2Value = f2(x0, y0);
+
+        x = x0 - derivativeMatrix[0][0] * f1Value - derivativeMatrix[0][1] * f2Value;
+        y = y0 - derivativeMatrix[1][0] * f1Value - derivativeMatrix[1][1] * f2Value;
+
+        for (size_t i = 0; i < Jacobian.Rows(); i++) {
+            for (size_t j = 0; j < Jacobian.Columns(); j++) {
+                Jacobian[i][j] = derivatives[i][j](x, y);
+            }
+        }
+
         q = CubicNorm(Jacobian);
         residualNorm = std::max(fabs(x - x0), fabs(y - y0)) * (1 - q) / q;
         std::cout << std::setprecision(10)
