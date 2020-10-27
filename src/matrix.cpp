@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "../hpp/matrix.hpp"
+#include "../include/matrix.hpp"
 
 ostream &operator<<(ostream &out, const Matrix &matrix) {
     for (size_t r = 0; r < matrix.rows; r++) {

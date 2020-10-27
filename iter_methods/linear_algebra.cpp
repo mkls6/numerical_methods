@@ -1,5 +1,7 @@
 #include "linear_algebra.hpp"
 #include "matrix.hpp"
+#include "../include/linear_algebra.hpp"
+
 #include <fstream>
 #include <iomanip>
 #include <cmath>
