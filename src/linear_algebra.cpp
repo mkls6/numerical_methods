@@ -4,6 +4,9 @@
 #include <iostream>
 #include <iomanip>
 
+static const int n = 14;
+static const int n1 = 7;
+
 double LAlgebra::CubicNorm(Matrix &matrix) {
     double max_sum = 0;
     double tmp_sum = 0;
@@ -156,13 +159,14 @@ Matrix LAlgebra::NLSimpleIterSolve(double x0,
 
     std::cout << "Jacobian:\n" << Jacobian << "\n";
     std::cout << "Jacobian norm:\n" << CubicNorm(Jacobian) << "\n";
-    std::cout << std::setw(18) << "Itr"
-              << std::setw(18) << "x"
-              << std::setw(18) << "y"
-              << std::setw(18) << "Residual norm"
-              << std::setw(18) << "F1"
-              << std::setw(18) << "F2"
-              << std::setw(18) << "Jacobian norm"
+    std::cout << "\nSimple iteration:\n";
+    std::cout << std::setw(n) << "Itr"
+              << std::setw(n) << "x"
+              << std::setw(n) << "y"
+              << std::setw(n) << "Residual norm"
+              << std::setw(n) << "F1"
+              << std::setw(n) << "F2"
+              << std::setw(n) << "Jacobian norm"
               << "\n";
 
     do {
@@ -177,15 +181,15 @@ Matrix LAlgebra::NLSimpleIterSolve(double x0,
             }
         }
         q = CubicNorm(Jacobian);
-        residualNorm = std::max(fabs(x - x0), fabs(y - y0)) * (1 - q) / q;
-        std::cout << std::setprecision(10)
-                  << std::setw(18) << iter
-                  << std::setw(18) << x
-                  << std::setw(18) << y
-                  << std::setw(18) << residualNorm
-                  << std::setw(18) << f1(x, y)
-                  << std::setw(18) << f2(x, y)
-                  << std::setw(18) << q
+        residualNorm = sqrt(pow(x - x0, 2) + pow(y - y0, 2));
+        std::cout << std::setprecision(n1)
+                  << std::setw(n) << iter
+                  << std::setw(n) << x
+                  << std::setw(n) << y
+                  << std::setw(n) << residualNorm
+                  << std::setw(n) << f1(x, y)
+                  << std::setw(n) << f2(x, y)
+                  << std::setw(n) << q
                   << "\n";
 
         x0 = x;
@@ -214,13 +218,13 @@ Matrix LAlgebra::NLNewtonSolve(double x0,
     auto f1 = functions[0];
     auto f2 = functions[1];
 
-    std::cout << std::setw(18) << "Itr"
-              << std::setw(18) << "x"
-              << std::setw(18) << "y"
-              << std::setw(18) << "Residual norm"
-              << std::setw(18) << "F1"
-              << std::setw(18) << "F2"
-              << std::setw(18) << "Jacobian norm"
+    std::cout << std::setw(n) << "Itr"
+              << std::setw(n) << "x"
+              << std::setw(n) << "y"
+              << std::setw(n) << "Residual norm"
+              << std::setw(n) << "F1"
+              << std::setw(n) << "F2"
+              << std::setw(n) << "Jacobian norm"
               << "\n";
 
     do {
@@ -245,15 +249,15 @@ Matrix LAlgebra::NLNewtonSolve(double x0,
         }
 
         q = CubicNorm(Jacobian);
-        residualNorm = std::max(fabs(x - x0), fabs(y - y0)) * (1 - q) / q;
-        std::cout << std::setprecision(10)
-                  << std::setw(18) << iter
-                  << std::setw(18) << x
-                  << std::setw(18) << y
-                  << std::setw(18) << residualNorm
-                  << std::setw(18) << f1(x, y)
-                  << std::setw(18) << f2(x, y)
-                  << std::setw(18) << q
+        residualNorm = sqrt(pow(x - x0, 2) + pow(y - y0, 2));
+        std::cout << std::setprecision(n1)
+                  << std::setw(n) << iter
+                  << std::setw(n) << x
+                  << std::setw(n) << y
+                  << std::setw(n) << residualNorm
+                  << std::setw(n) << f1(x, y)
+                  << std::setw(n) << f2(x, y)
+                  << std::setw(n) << q
                   << "\n";
 
         x0 = x;
@@ -286,13 +290,26 @@ Matrix LAlgebra::NLGradientDescentSolve(double x0,
     auto f1 = functions[0];
     auto f2 = functions[1];
 
+    double startAlpha = alpha;
+
     size_t iter = 0;
 
     Matrix derivativeVec(1, 2);
     Matrix Jacobian(2, 2);
 
+    std::cout << std::setw(n) << "Itr"
+              << std::setw(n) << "x"
+              << std::setw(n) << "y"
+              << std::setw(n) << "Residual norm"
+              << std::setw(n) << "F1"
+              << std::setw(n) << "F2"
+              << std::setw(n) << "Jacobian norm"
+              << std::setw(n / 2) << "Alpha"
+              << "\n";
+
     do {
         iter++;
+        startAlpha = alpha;
 
         // Update derivative vector with new values
         for (size_t i = 0; i < derivatives2.size(); i++) {
@@ -306,25 +323,25 @@ Matrix LAlgebra::NLGradientDescentSolve(double x0,
             }
         }
 
-        while (targetFunc(x0 - alpha * derivativeVec[0][0],
-                          y0 - alpha * derivativeVec[0][1],
+        while (targetFunc(x0 - startAlpha * derivativeVec[0][0],
+                          y0 - startAlpha * derivativeVec[0][1],
                           f1, f2) >= targetFunc(x0, y0, f1, f2))
-            alpha *= lambda;
+            startAlpha *= lambda;
 
-        x = x0 - alpha * derivativeVec[0][0];
-        y = y0 - alpha * derivativeVec[0][1];
+        x = x0 - startAlpha * derivativeVec[0][0];
+        y = y0 - startAlpha * derivativeVec[0][1];
 
         q = CubicNorm(Jacobian);
-        residualNorm = std::max(fabs(x - x0), fabs(y - y0)) * (1 - q) / q;
-        std::cout << std::setprecision(10)
-                  << std::setw(18) << iter
-                  << std::setw(18) << x
-                  << std::setw(18) << y
-                  << std::setw(18) << residualNorm
-                  << std::setw(18) << f1(x, y)
-                  << std::setw(18) << f2(x, y)
-                  << std::setw(18) << q
-                  << std::setw(18) << alpha
+        residualNorm = sqrt(pow(x - x0, 2) + pow(y - y0, 2));
+        std::cout << std::setprecision(n1)
+                  << std::setw(n) << iter
+                  << std::setw(n) << x
+                  << std::setw(n) << y
+                  << std::setw(n) << residualNorm
+                  << std::setw(n) << f1(x, y)
+                  << std::setw(n) << f2(x, y)
+                  << std::setw(n) << q
+                  << std::setw(n / 2) << startAlpha
                   << "\n";
 
         x0 = x;
@@ -332,5 +349,7 @@ Matrix LAlgebra::NLGradientDescentSolve(double x0,
 
     } while (residualNorm > eps);
 
-    return Matrix(0, 0);
+
+    vector<double> result({x, y});
+    return result;
 }
