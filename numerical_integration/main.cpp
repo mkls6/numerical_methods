@@ -40,7 +40,7 @@ int main() {
     // Call Simpson method
     cout << std::fixed << std::setw(10) << std::setprecision(9) << ComputationalMath::SimpsonIntegration(a, b, func1) << "\n";
     // Call Newton3 method
-    cout << std::fixed << std::setw(10) << std::setprecision(9) << ComputationalMath::Gauss3Integration(a, b, func1) << "\n";
+    cout << std::fixed << std::setw(10) << std::setprecision(9) << ComputationalMath::GaussianQuadratureIntegration(a, b, func1) << "\n";
 
     return 0;
 }
