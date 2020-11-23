@@ -22,10 +22,9 @@ public:
                                      double,
                                      const function<double(double)>&);
 
-    static double Newton3Integration(double,
-                                     double,
-                                     const function<double(double)>&,
-                                     const function<double(double)>&);
+    static double Gauss3Integration(double,
+                                    double,
+                                    const function<double(double)>&);
 };
 
 
