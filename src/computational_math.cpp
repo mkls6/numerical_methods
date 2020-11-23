@@ -38,7 +38,34 @@ double ComputationalMath::TrapezoidSplineIntegration(double left,
                                                      double right,
                                                      const function<double(double)>& f,
                                                      const function<double(double)>& df) {
-    return 0;
+    // Initial values
+    double segmentsNumber = 1;
+    // Width of the segment
+    double width = 1;
+    // Computed integral value
+    double previousValue = 0;
+    double currentValue = 0;
+    // Runge rule coefficient for trapezoid rule
+    double theta = 1 / 3.;
+
+    do {
+        width = (right - left) / segmentsNumber;
+
+        previousValue = currentValue;
+        currentValue = width * 0.5 * (f(left) + f(right)) + pow(width, 2) / 12. * (df(left) - df(right));
+        double innerSum = 0;
+
+        double x = left;
+        for (int step = 1; step < segmentsNumber; step++) {
+            x += width;
+            innerSum += f(x);
+        }
+        currentValue += width * innerSum;
+        segmentsNumber *= 2;
+
+    } while (theta * fabs(currentValue - previousValue) > EPS);
+
+    return currentValue;
 }
 
 double ComputationalMath::SimpsonIntegration(double left,
