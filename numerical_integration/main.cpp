@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 #include "../include/computational_math.hpp"
 
 using std::pow, std::cout;
@@ -27,9 +28,11 @@ int main() {
     double b = 2;
 
     // Call trapezoidal rule implementation
-    cout << ComputationalMath::TrapezoidIntegration(a, b, func1) << "\n";
+    cout << std::setw(10) << std::setprecision(9) << ComputationalMath::TrapezoidIntegration(a, b, func1) << "\n";
     // Call trapezoidal spline method
-    cout << ComputationalMath::TrapezoidSplineIntegration(a, b, func1, dfunc1);
+    cout << std::setw(10) << std::setprecision(9) << ComputationalMath::TrapezoidSplineIntegration(a, b, func1, dfunc1) << "\n";
+    // Call Simpson method
+    cout << std::setw(10) << std::setprecision(9) << ComputationalMath::SimpsonIntegration(a, b, func1) << "\n";
 
     return 0;
 }

@@ -20,7 +20,6 @@ public:
 
     static double SimpsonIntegration(double,
                                      double,
-                                     const function<double(double)>&,
                                      const function<double(double)>&);
 
     static double Newton3Integration(double,
