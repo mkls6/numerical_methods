@@ -181,7 +181,7 @@ Matrix LAlgebra::NLSimpleIterSolve(double x0,
             }
         }
         q = CubicNorm(Jacobian);
-        residualNorm = sqrt(pow(x - x0, 2) + pow(y - y0, 2));
+        residualNorm = sqrt(pow(f1(x, y), 2) + pow(f2(x, y), 2));
         std::cout << std::setprecision(n1)
                   << std::setw(n) << iter
                   << std::setw(n) << x
