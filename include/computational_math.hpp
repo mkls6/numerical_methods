@@ -8,7 +8,7 @@ using std::function;
 
 class ComputationalMath {
 public:
-    static constexpr double EPS = 1e-8;
+    static constexpr double EPS = 1e-10;
 
     static double TrapezoidIntegration(double,
                                        double,

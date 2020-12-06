@@ -32,15 +32,32 @@ int main() {
     double b = 2;
 
     // Call trapezoidal rule implementation
-    cout << std::fixed << std::setw(10) << std::setprecision(9) << ComputationalMath::TrapezoidIntegration(a, b, func1) << "\n";
+    cout << "\nTrapezoid\n";
+    auto value = ComputationalMath::TrapezoidIntegration(a, b, func2);
+    cout << "Result: " << std::setprecision(16) << std::defaultfloat << value << "\nFunction calls: "
+         << numberOfFunctionCalls << "\n";
+    numberOfFunctionCalls = 0;
+
     // Call trapezoidal spline method
-    cout << std::fixed << std::setw(10) << std::setprecision(9) << ComputationalMath::TrapezoidSplineIntegration(a, b,
-                                                                                                                 func1,
-                                                                                                                 df1) << "\n";
+    cout << "\nTrapezoid with spline\n";
+    value = ComputationalMath::TrapezoidSplineIntegration(a, b, func2, df2);
+    cout << "Result: " << std::setprecision(16) << std::defaultfloat << value << "\nFunction calls: "
+         << numberOfFunctionCalls << "\n";
+    numberOfFunctionCalls = 0;
+
     // Call Simpson method
-    cout << std::fixed << std::setw(10) << std::setprecision(9) << ComputationalMath::SimpsonIntegration(a, b, func1) << "\n";
+    cout << "\nSimpson\n";
+    value = ComputationalMath::SimpsonIntegration(a, b, func2);
+    cout << "Result: " << std::setprecision(16) << std::defaultfloat << value << "\nFunction calls: "
+         << numberOfFunctionCalls << "\n";
+    numberOfFunctionCalls = 0;
+
     // Call Newton3 method
-    cout << std::fixed << std::setw(10) << std::setprecision(9) << ComputationalMath::GaussianQuadratureIntegration(a, b, func1) << "\n";
+    cout << "\nGaussian quadrature\n";
+    value = ComputationalMath::GaussianQuadratureIntegration(a, b, func2);
+    cout << "Result: " << std::setprecision(16) << std::defaultfloat << value << "\nFunction calls: "
+         << numberOfFunctionCalls << "\n";
+    numberOfFunctionCalls = 0;
 
     return 0;
 }
